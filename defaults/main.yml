@@ -35,7 +35,7 @@ certbot_create_command: >-
   --email {{ cert_item.email | default(certbot_admin_email) }}
   {{ '--webroot-path ' if certbot_create_method == 'webroot'  else '' }}
   {{ cert_item.webroot | default(certbot_webroot) if certbot_create_method == 'webroot' else '' }}
-  -d {{ cert_item.domains | join(',') }}
+  --domains {{ cert_item.domains | join(',') }} --expand
   {{ '--pre-hook /etc/letsencrypt/renewal-hooks/pre/stop_services'
     if certbot_create_standalone_stop_services
   else '' }}

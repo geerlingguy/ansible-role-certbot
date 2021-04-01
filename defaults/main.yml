@@ -37,3 +37,11 @@ certbot_keep_updated: true
 
 # Where to put Certbot when installing from source.
 certbot_dir: /opt/certbot
+
+# Certbot global options for command line execution. Useful as a substitute for
+# certbot_auto_renew_options when using  snap install method
+# certbot_cli_options: |
+#   quiet
+#   no-self-upgrade
+#   pre-hook = systemctl stop httpd
+#   post-hook = systemctl stop httpd

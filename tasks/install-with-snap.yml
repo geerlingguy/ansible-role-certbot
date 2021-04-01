@@ -1,4 +1,10 @@
 ---
+- name: Ensure EPEL repository.
+  package:
+    name: epel-release
+    state: present
+  when: ansible_os_family == "RedHat"
+
 - name: Ensure snapd is installed.
   package:
     name: snapd
@@ -7,7 +13,8 @@
 
 - name: Ensure snapd is enabled.
   systemd:
-    name: snapd.socket
+    name: snapd
+    state: started
     enabled: true
     state: started
 
@@ -22,6 +29,11 @@
   changed_when: true
   failed_when: false
   when: snapd_install is changed
+
+- name: Remove old certbot packages.
+  package:
+    name: "{{ certbot_package }}"
+    state: absent
 
 - name: Install certbot via snap.
   snap:

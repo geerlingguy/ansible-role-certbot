@@ -11,6 +11,12 @@
   when: not letsencrypt_cert.stat.exists
   with_items: "{{ certbot_create_standalone_stop_services }}"
 
+- name: Add renew options to cli.ini file
+  copy:
+    dest: /etc/letsencrypt/cli.ini
+    content: "{{ certbot_cli_options }}"
+  when: certbot_cli_options is defined
+
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_create_command }}"
   when: not letsencrypt_cert.stat.exists

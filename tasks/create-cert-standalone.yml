@@ -4,20 +4,35 @@
     path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
   register: letsencrypt_cert
 
-- name: Stop services to allow certbot to generate a cert.
-  service:
-    name: "{{ item }}"
-    state: stopped
-  when: not letsencrypt_cert.stat.exists
-  with_items: "{{ certbot_create_standalone_stop_services }}"
+- name: create pre and post hook folders because those don't exist yet on a fresh install
+  file:
+    path: /etc/letsencrypt/renewal-hooks/{{ item }}
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - pre
+    - post
+
+- name: Create pre hook to stop services
+  template:
+    src: stop_services.j2
+    dest: /etc/letsencrypt/renewal-hooks/pre/stop_services
+    owner: root
+    group: root
+    mode: 0750
+  when: certbot_create_standalone_stop_services is defined and certbot_create_standalone_stop_services
+
+- name: create post hook to start services
+  template:
+    src: start_services.j2
+    dest: /etc/letsencrypt/renewal-hooks/post/start_services
+    owner: root
+    group: root
+    mode: 0750
+  when: certbot_create_standalone_stop_services is defined and certbot_create_standalone_stop_services
 
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_create_command }}"
   when: not letsencrypt_cert.stat.exists
-
-- name: Start services after cert has been generated.
-  service:
-    name: "{{ item }}"
-    state: started
-  when: not letsencrypt_cert.stat.exists
-  with_items: "{{ certbot_create_standalone_stop_services }}"

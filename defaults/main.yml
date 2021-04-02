@@ -21,6 +21,12 @@ certbot_create_command: >-
   {{ certbot_script }} certonly --standalone --noninteractive --agree-tos
   --email {{ cert_item.email | default(certbot_admin_email) }}
   -d {{ cert_item.domains | join(',') }}
+  {{ '--pre-hook /etc/letsencrypt/renewal-hooks/pre/stop_services'
+    if certbot_create_standalone_stop_services
+  else '' }}
+  {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'
+    if certbot_create_standalone_stop_services
+  else '' }}
 
 certbot_create_standalone_stop_services:
   - nginx

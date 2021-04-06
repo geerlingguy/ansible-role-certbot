@@ -6,3 +6,11 @@
     minute: "{{ certbot_auto_renew_minute }}"
     hour: "{{ certbot_auto_renew_hour }}"
     user: "{{ certbot_auto_renew_user }}"
+  when: not certbot_auto_renew_use_systemd
+
+- name: Enable certbot renewal timer
+  systemd:
+    name: certbot-renew.timer
+    state: started
+    enabled: "yes"
+  when: certbot_auto_renew_use_systemd

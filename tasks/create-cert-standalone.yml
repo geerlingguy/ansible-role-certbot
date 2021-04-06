@@ -21,3 +21,13 @@
     state: started
   when: not letsencrypt_cert.stat.exists
   with_items: "{{ certbot_create_standalone_stop_services }}"
+
+- name: Apply renewal configuration updates
+  ini_file:
+    path: "/etc/letsencrypt/renewal/{{ cert_item.domains | first | replace('*.', '') }}.conf"
+    section: renewalparams
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    create: "no"
+  loop: "{{ cert_item.renewal_config | dict2items }}"
+  when: cert_item.renewal_config is defined

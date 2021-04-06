@@ -6,19 +6,30 @@ certbot_auto_renew_hour: "3"
 certbot_auto_renew_minute: "30"
 certbot_auto_renew_options: "--quiet --no-self-upgrade"
 
+# Enable the systemd timer that ships with many OS packages, instead of creating a crontab
+# If certbot_auto_renew is not set, this option has no effect
+certbot_auto_renew_use_systemd: false
+
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false
 certbot_create_method: standalone
+certbot_create_options: ""
 certbot_admin_email: email@example.com
 certbot_certs: []
 # - email: janedoe@example.com
 #   domains:
 #     - example1.com
 #     - example2.com
+#   renewal_config:
+#     authenticator: webroot
+#     webroot_path: /usr/share/nginx/html
+#     renew_hook: systemctl restart nginx
+#   create_options: --server https://ca.internal/acme/acme/director
 # - domains:
 #     - example3.com
 certbot_create_command: >-
-  {{ certbot_script }} certonly --standalone --noninteractive --agree-tos
+  {{ certbot_script }} certonly --standalone --noninteractive
+  --agree-tos {{ cert_item.create_options | default(certbot_create_options) }}
   --email {{ cert_item.email | default(certbot_admin_email) }}
   -d {{ cert_item.domains | join(',') }}
 

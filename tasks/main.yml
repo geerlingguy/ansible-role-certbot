@@ -22,4 +22,4 @@
     loop_var: cert_item
 
 - import_tasks: renew-cron.yml
-  when: certbot_auto_renew
+  when: certbot_auto_renew and not (ansible_os_family == 'Debian' and not certbot_install_from_source)

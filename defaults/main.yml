@@ -37,3 +37,6 @@ certbot_keep_updated: true
 
 # Where to put Certbot when installing from source.
 certbot_dir: /opt/certbot
+
+# Controls if classic snap support will be enabled when certbot_install_method is 'snap'
+certbot_snap_classic_support: true

@@ -20,6 +20,7 @@ certbot_certs: []
 certbot_create_command: >-
   {{ certbot_script }} certonly --standalone --noninteractive --agree-tos
   --email {{ cert_item.email | default(certbot_admin_email) }}
+  {{ certbot_create_extra_args }}
   -d {{ cert_item.domains | join(',') }}
 
 certbot_create_standalone_stop_services:

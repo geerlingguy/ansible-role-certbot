@@ -15,6 +15,7 @@
     src: /var/lib/snapd/snap
     dest: /snap
     state: link
+  when: ansible_os_family != "Debian"
 
 - name: Update snap after install.
   shell: snap install core; snap refresh core

@@ -15,6 +15,7 @@
     src: /var/lib/snapd/snap
     dest: /snap
     state: link
+  ignore_errors: true
 
 - name: Update snap after install.
   shell: snap install core; snap refresh core

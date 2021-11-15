@@ -39,7 +39,7 @@ certbot_create_command: >-
 # Parameters DNS Plugins (used when certbot_create_method = dns)
 certbot_dns_plugin: rfc2136
 # certbot_dns_credentials_custom_file: <file-path> # use when  plugin is != rfc2136
-# certbot_dns_target_server: 127.0.0.1 
+# certbot_dns_target_server: 127.0.0.1
 # certbot_dns_target_server_port: 53
 # certbot_dns_tsig_keyname: "certbot."
 # certbot_dns_key_secret: "azertyAZERTY123456"

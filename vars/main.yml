@@ -1,6 +1,6 @@
---- 
+---
 certbot_dns_credentials_file: "/etc/letsencrypt/dns-{{ certbot_dns_plugin }}-credentials"
-certbot_supported_dns_plugins: 
+certbot_supported_dns_plugins:
  - rfc2136
  - cloudflare
  - digitalocean

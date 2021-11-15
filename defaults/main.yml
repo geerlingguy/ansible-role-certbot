@@ -67,8 +67,6 @@ certbot_create_standalone_stop_services:
   # - apache
   # - varnish
 
-# [root@dnstest-default-9qvkw-test-3 ~]# certbot delete --cert-name certbotdnstest.staging.prodepa.pa.gov.br -n
-
 certbot_delete_command: >-
   {{ certbot_script }} delete --noninteractive
   --cert-name {{ cert_item.domains | first | replace('*.', '') }} 

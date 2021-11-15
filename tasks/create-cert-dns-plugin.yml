@@ -1,0 +1,64 @@
+---
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  register: letsencrypt_cert
+
+- name: Ensure pre,post,deploy hook folders exist.
+  file:
+    path: /etc/letsencrypt/renewal-hooks/{{ item }}
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - deploy
+
+- name: Create deploy hook to execute tasks post cert generatation.
+  template:
+    src: renew_hook.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/renew_hook.sh
+    owner: root
+    group: root
+    mode: 0750
+  when:
+    - certbot_create_dns_renew_hook_services is defined
+
+- name: "Create DNS RFC {{ certbot_dns_plugin }} Credentials File."
+  template:
+    src: dns_plugin_credentials.j2
+    dest: "{{certbot_dns_credentials_file}}"
+    owner: root
+    group: root
+    mode: 0600
+  when:
+    - certbot_dns_plugin is in certbot_supported_dns_plugins
+
+- name: Upload custom dns credential file
+  copy:
+    src: "{{ certbot_dns_credentials_custom_file  }}"
+    dest: "{{ certbot_dns_credentials_file }}"
+    state: file
+    mode: 0600
+    owner: root
+    group: root
+  when:
+    - certbot_dns_plugin != 'rfc2136'
+    - certbot_dns_credentials_custom_file is defined
+  
+- name: Generate new certificate if one doesn't exist.
+  command: "{{ certbot_dns_create_command }}"
+  when: not letsencrypt_cert.stat.exists
+
+- name: Assemble certificate crt and key into pem file for haproxy
+  assemble:
+    dest: "/etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/{{ cert_item.domains | first | replace('*.', '') }}-haproxy.pem"
+    src: "/etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/"
+    regexp: '(fullchain.pem|privkey.pem)'
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0600'
+  when: 
+    - not letsencrypt_cert.stat.exists 
+    - ('haproxy' is in certbot_create_dns_renew_hook_services)|bool

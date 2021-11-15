@@ -35,6 +35,17 @@
     dest: /usr/bin/certbot
     state: link
 
+- name: Make sure certbot Trust Plugins With Root is set.
+  command: snap set certbot trust-plugin-with-root=ok
+  when: 
+    - certbot_dns_plugin is defined
+
+- name: Install DNS Plugin - {{ certbot_dns_plugin }}.
+  snap:
+    name: "certbot-dns-{{certbot_dns_plugin}}"
+    classic: true
+  when: certbot_dns_plugin is defined
+
 - name: Set Certbot script variable.
   set_fact:
     certbot_script: /usr/bin/certbot

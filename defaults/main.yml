@@ -6,6 +6,9 @@ certbot_auto_renew_hour: "3"
 certbot_auto_renew_minute: "30"
 certbot_auto_renew_options: "--quiet --no-self-upgrade"
 
+# Enable to use staging server instead of production (useful for testing)
+certbot_use_staging_server: false
+
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false
 certbot_create_method: standalone
@@ -27,6 +30,29 @@ certbot_create_command: >-
   {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'
     if certbot_create_standalone_stop_services
   else '' }}
+
+# Parameters DNS Plugins (used when certbot_create_method = dns)
+certbot_dns_plugin: rfc2136
+# certbot_dns_credentials_custom_file: <file-path> # use when  plugin is != rfc2136
+certbot_dns_target_server: 127.0.0.1 
+certbot_dns_target_server_port: 53
+certbot_dns_tsig_keyname: "certbot."
+certbot_dns_key_secret: "azertyAZERTY123456"
+certbot_dns_key_algorithm: "HMAC-MD5"
+certbot_dns_create_command: >-
+  {{ certbot_script }} certonly --noninteractive --agree-tos
+  {{ '--test-cert'
+    if certbot_use_staging_server
+  else '' }}
+  --dns-{{ certbot_dns_plugin }} --dns-{{ certbot_dns_plugin }}-credentials {{ certbot_dns_credentials_file }}
+  --email {{ cert_item.email | default(certbot_admin_email) }}
+  -d {{ cert_item.domains | join(',') }}
+  {{ '--deploy-hook /etc/letsencrypt/renewal-hooks/deploy/renew_hook.sh'
+    if certbot_create_dns_renew_hook_services
+  else '' }}
+
+certbot_create_dns_renew_hook_services:
+  - haproxy
 
 certbot_create_standalone_stop_services:
   - nginx

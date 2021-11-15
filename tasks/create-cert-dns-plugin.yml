@@ -27,7 +27,7 @@
 - name: "Create DNS RFC {{ certbot_dns_plugin }} Credentials File."
   template:
     src: dns_plugin_credentials.j2
-    dest: "{{certbot_dns_credentials_file}}"
+    dest: "{{ certbot_dns_credentials_file }}"
     owner: root
     group: root
     mode: 0600
@@ -45,7 +45,7 @@
   when:
     - certbot_dns_plugin != 'rfc2136'
     - certbot_dns_credentials_custom_file is defined
-  
+
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_dns_create_command }}"
   when: not letsencrypt_cert.stat.exists

@@ -6,7 +6,7 @@
 
 - name: Delete Certificate
   command: "{{ certbot_delete_command }}"
-  when: 
+  when:
     - letsencrypt_cert.stat.exists
     - certbot_delete_certificate|bool
 
@@ -14,7 +14,7 @@
   file:
     path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}
     state: absent
-  when: 
+  when:
     - letsencrypt_cert.stat.exists
     - certbot_delete_certificate|bool
 

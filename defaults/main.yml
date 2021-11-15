@@ -59,8 +59,8 @@ certbot_dns_create_command: >-
 
 certbot_create_dns_deploy_hook_services:
   - haproxy
-  #- nginx
-  #- apache
+  # - nginx
+  # - apache
 
 certbot_create_standalone_stop_services:
   - nginx
@@ -69,7 +69,7 @@ certbot_create_standalone_stop_services:
 
 certbot_delete_command: >-
   {{ certbot_script }} delete --noninteractive
-  --cert-name {{ cert_item.domains | first | replace('*.', '') }} 
+  --cert-name {{ cert_item.domains | first | replace('*.', '') }}
 
 # Available options: 'package', 'snap', 'source'.
 certbot_install_method: 'package'

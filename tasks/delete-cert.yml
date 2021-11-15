@@ -1,0 +1,26 @@
+---
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
+  register: letsencrypt_cert
+
+- name: Delete Certificate
+  command: "{{ certbot_delete_command }}"
+  when: 
+    - letsencrypt_cert.stat.exists
+    - certbot_delete_certificate|bool
+
+- name: Make sure certificate directory is removed
+  file:
+    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}
+    state: absent
+  when: 
+    - letsencrypt_cert.stat.exists
+    - certbot_delete_certificate|bool
+
+- name: Remove cron job for certbot renewal (if configured).
+  cron:
+    name: Certbot automatic renewal.
+    state: absent
+  when:
+    - not certbot_auto_renew

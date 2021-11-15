@@ -16,13 +16,13 @@
 
 - name: Create deploy hook to execute tasks post cert generatation.
   template:
-    src: renew_hook.j2
-    dest: /etc/letsencrypt/renewal-hooks/deploy/renew_hook.sh
+    src: deploy_hook.j2
+    dest: /etc/letsencrypt/renewal-hooks/deploy/deploy_hook.sh
     owner: root
     group: root
     mode: 0750
   when:
-    - certbot_create_dns_renew_hook_services is defined
+    - certbot_create_dns_deploy_hook_services is defined
 
 - name: "Create DNS RFC {{ certbot_dns_plugin }} Credentials File."
   template:
@@ -49,16 +49,3 @@
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_dns_create_command }}"
   when: not letsencrypt_cert.stat.exists
-
-- name: Assemble certificate crt and key into pem file for haproxy
-  assemble:
-    dest: "/etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/{{ cert_item.domains | first | replace('*.', '') }}-haproxy.pem"
-    src: "/etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/"
-    regexp: '(fullchain.pem|privkey.pem)'
-    remote_src: yes
-    owner: root
-    group: root
-    mode: '0600'
-  when: 
-    - not letsencrypt_cert.stat.exists 
-    - ('haproxy' is in certbot_create_dns_renew_hook_services)|bool

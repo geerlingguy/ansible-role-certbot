@@ -13,11 +13,19 @@
 - import_tasks: install-from-source.yml
   when: certbot_install_method == 'source'
 
+- include_tasks: delete-cert.yml
+  with_items: "{{ certbot_certs }}"
+  when:
+    - certbot_delete_certificate|bool
+  loop_control:
+    loop_var: cert_item
+
 - include_tasks: create-cert-standalone.yml
   with_items: "{{ certbot_certs }}"
   when:
     - certbot_create_if_missing
     - certbot_create_method == 'standalone'
+    - not certbot_delete_certificate
   loop_control:
     loop_var: cert_item
 
@@ -26,8 +34,10 @@
   when:
     - certbot_create_if_missing
     - certbot_create_method == 'dns'
+    - not certbot_delete_certificate
   loop_control:
     loop_var: cert_item
 
 - import_tasks: renew-cron.yml
-  when: certbot_auto_renew
+  when: 
+    - certbot_auto_renew

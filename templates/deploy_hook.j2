@@ -1,0 +1,23 @@
+#!/bin/bash
+# {{ ansible_managed }}
+
+{% for item in certbot_create_dns_deploy_hook_services %}
+
+{% if item == 'haproxy' %}
+# Assemble certificate/chain and private key into one single file for haproxy
+cat $RENEWED_LINEAGE/fullchain.pem $RENEWED_LINEAGE/privkey.pem > $RENEWED_LINEAGE/`echo $RENEWED_DOMAINS|awk '{print $1"-haproxy.pem"}'`
+# set proper permissions
+chmod 0600 $RENEWED_LINEAGE/`echo $RENEWED_DOMAINS|awk '{print $1"-haproxy.pem"}'`
+{% endif %}
+
+{% if ansible_service_mgr == 'systemd' %}
+systemctl reload {{ item }}
+{% elif ansible_service_mgr == 'upstart' %}
+initctl stop {{ item }} && initctl start {{ item }}
+{% elif ansible_service_mgr == 'openrc' %}
+rc-service {{ item }} restart
+{% else %}
+service {{ item }} reload
+{% endif %}
+
+{% endfor %}

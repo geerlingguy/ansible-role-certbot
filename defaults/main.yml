@@ -14,6 +14,17 @@ certbot_delete_certificate: false
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false
 certbot_create_method: standalone
+# certbot_create_method: dns
+
+# Parameters DNS Plugins (used when certbot_create_method = dns)
+# certbot_dns_plugin: rfc2136
+# certbot_dns_credentials_custom_file: <file-path> # use when  plugin is != rfc2136
+# certbot_dns_target_server: 127.0.0.1
+# certbot_dns_target_server_port: 53
+# certbot_dns_tsig_keyname: "certbot."
+# certbot_dns_key_secret: "azertyAZERTY123456"
+# certbot_dns_key_algorithm: "HMAC-MD5"
+
 certbot_admin_email: email@example.com
 certbot_certs: []
 # - email: janedoe@example.com
@@ -35,15 +46,6 @@ certbot_create_command: >-
   {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'
     if certbot_create_standalone_stop_services
   else '' }}
-
-# Parameters DNS Plugins (used when certbot_create_method = dns)
-certbot_dns_plugin: rfc2136
-# certbot_dns_credentials_custom_file: <file-path> # use when  plugin is != rfc2136
-# certbot_dns_target_server: 127.0.0.1
-# certbot_dns_target_server_port: 53
-# certbot_dns_tsig_keyname: "certbot."
-# certbot_dns_key_secret: "azertyAZERTY123456"
-# certbot_dns_key_algorithm: "HMAC-MD5"
 
 certbot_dns_create_command: >-
   {{ certbot_script }} certonly --noninteractive --agree-tos

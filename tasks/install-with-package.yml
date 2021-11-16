@@ -3,7 +3,7 @@
   package: "name={{ certbot_package }} state=present"
 
 - name: Install DNS Plugin - {{ certbot_dns_plugin }}.
-  package: name="certbot-dns-{{ certbot_dns_plugin }} state=present"
+  package: name="python3-certbot-dns-{{ certbot_dns_plugin }} state=present"
   when: certbot_dns_plugin is defined
 
 - name: Set Certbot script variable.

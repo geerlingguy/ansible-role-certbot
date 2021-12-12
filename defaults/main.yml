@@ -9,6 +9,8 @@ certbot_auto_renew_options: "--quiet --no-self-upgrade"
 certbot_testmode: false
 certbot_hsts: false
 
+# cerbot command. On old releases change to certbot_cmd: certbot-auto. Defalut is certbot.
+certbot_cmd: certbot
 
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false

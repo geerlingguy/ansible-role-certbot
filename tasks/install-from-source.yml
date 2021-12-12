@@ -9,7 +9,7 @@
 
 - name: Set Certbot script variable.
   set_fact:
-    certbot_script: "{{ certbot_dir }}/certbot-auto"
+    certbot_script: "{{ certbot_dir }}/{{ certbot_cmd }}"
 
 - name: Ensure certbot-auto is executable.
   file:

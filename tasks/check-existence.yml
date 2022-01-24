@@ -1,0 +1,16 @@
+---
+- name: Get installed certificates.
+  shell: |
+    {{ certbot_script }} certificates | grep "Domains:" | awk '{ gsub(/    Domains: /,""); print }'
+  changed_when: false
+  register: letsencrypt_certs
+
+- name: Set cert_exists to false (to check if cert exists).
+  set_fact:
+    cert_exists: false
+
+- name: Check if certificate already exists.
+  set_fact:
+    cert_exists: true
+  when: cert_item.domains | sort | difference(item) == []
+  with_list: "{{ letsencrypt_certs.stdout_lines }}"

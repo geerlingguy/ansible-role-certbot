@@ -7,25 +7,23 @@
       name: dnf-plugins-core
       state: present
 
-  - block:
+  - name: Enable DNF module for CentOS 8.3+.
+    shell: |
+      dnf config-manager --set-enabled powertools
+    args:
+      warn: false
+    register: dnf_module_enable
+    changed_when: false
 
-      - name: Enable DNF module for CentOS 8.3+.
-        shell: |
-          dnf config-manager --set-enabled powertools
-        args:
-          warn: false
-        register: dnf_module_enable
-        changed_when: false
+    when: ansible_facts['distribution_version'] is version('8.3', '>=')
 
-        when: ansible_facts['distribution_version'] is version('8.3', '>=')
-
-      - name: Enable DNF module for CentOS 8.0–8.2.
-        shell: |
-          dnf config-manager --set-enabled PowerTools
-        args:
-          warn: false
-        register: dnf_module_enable
-        changed_when: false
+  - name: Enable DNF module for CentOS 8.0–8.2.
+    shell: |
+      dnf config-manager --set-enabled PowerTools
+    args:
+      warn: false
+    register: dnf_module_enable
+    changed_when: false
 
     when: ansible_facts['distribution_version'] is version('8.2', '<=')
 

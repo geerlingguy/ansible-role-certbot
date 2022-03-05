@@ -17,7 +17,7 @@
         register: dnf_module_enable
         changed_when: false
 
-        when: ansible_facts['distribution_version'] is version('8.3', '>=')
+        when: ansible_facts['distribution_version'] is version('8.3','>=') or ansible_facts['distribution_release'] == 'Stream'
 
       - name: Enable DNF module for CentOS 8.0–8.2.
         shell: |
@@ -27,7 +27,7 @@
         register: dnf_module_enable
         changed_when: false
 
-    when: ansible_facts['distribution_version'] is version('8.2', '<=')
+        when: ansible_facts['distribution_version'] is version('8.2','<=') and ansible_facts['distribution_release'] != 'Stream'
 
   when:
     - ansible_distribution == 'CentOS'

@@ -7,27 +7,32 @@
       name: dnf-plugins-core
       state: present
 
-  - block:
+  - name: Enable DNF module for CentOS 8.3+.
+    shell: |
+      dnf config-manager --set-enabled powertools
+    args:
+      warn: false
+    register: dnf_module_enable
+    changed_when: false
+    when: ansible_facts['distribution_version'] is version('8.3', '>=') or ansible_facts['distribution_release'] == 'Stream'
 
-      - name: Enable DNF module for CentOS 8.3+.
-        shell: |
-          dnf config-manager --set-enabled powertools
-        args:
-          warn: false
-        register: dnf_module_enable
-        changed_when: false
+  - name: Enable DNF module for CentOS 8.0–8.2.
+    shell: |
+      dnf config-manager --set-enabled PowerTools
+    args:
+      warn: false
+    register: dnf_module_enable
+    changed_when: false
+    when: ansible_facts['distribution_version'] is version('8.2', '<=') and ansible_facts['distribution_release'] != 'Stream'
 
-        when: ansible_facts['distribution_version'] is version('8.3', '>=')
-
-      - name: Enable DNF module for CentOS 8.0–8.2.
-        shell: |
-          dnf config-manager --set-enabled PowerTools
-        args:
-          warn: false
-        register: dnf_module_enable
-        changed_when: false
-
-    when: ansible_facts['distribution_version'] is version('8.2', '<=')
+  - name: Enable EPEL on CentOS 8.
+    yum:
+      name: 
+       - epel-release
+      state: present
+    register: dnf_module_enable
+    changed_when: false
+    when: ansible_facts['distribution_release'] == 'Stream'
 
   when:
     - ansible_distribution == 'CentOS'

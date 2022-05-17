@@ -27,8 +27,8 @@
 
   - name: Enable EPEL on CentOS 8.
     yum:
-      name: 
-       - epel-release
+      name:
+        - epel-release
       state: present
     register: dnf_module_enable
     changed_when: false

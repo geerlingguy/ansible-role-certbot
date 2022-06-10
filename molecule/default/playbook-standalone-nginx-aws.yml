@@ -89,7 +89,8 @@
   vars:
     certbot_admin_email: https@servercheck.in
     certbot_create_if_missing: true
-    certbot_create_standalone_stop_services: []
+    certbot_create_standalone_stop_services:
+      - nginx
     certbot_certs:
       - domains:
           - certbot-test.servercheck.in
@@ -104,7 +105,7 @@
         extra_parameters: |
           ssl_certificate     /etc/letsencrypt/live/certbot-test.servercheck.in/fullchain.pem;
           ssl_certificate_key /etc/letsencrypt/live/certbot-test.servercheck.in/privkey.pem;
-          ssl_protocols       TLSv1.1 TLSv1.2;
+          ssl_protocols       TLSv1.2 TLSv1.3;
           ssl_ciphers         HIGH:!aNULL:!MD5;
 
   pre_tasks:

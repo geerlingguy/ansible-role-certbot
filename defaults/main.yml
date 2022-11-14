@@ -9,7 +9,6 @@ certbot_auto_renew_options: "--quiet --no-self-upgrade"
 certbot_testmode: false
 certbot_hsts: false
 
-
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false
 certbot_create_method: standalone
@@ -58,3 +57,4 @@ certbot_keep_updated: true
 
 # Where to put Certbot when installing from source.
 certbot_dir: /opt/certbot
+certbot_source_executable_name: "certbot-auto"

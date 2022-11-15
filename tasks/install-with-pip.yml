@@ -1,0 +1,17 @@
+---
+- name: Install certbot system dependencies
+  package: "name=python3-pip state=present"
+
+- name: Install virtualenv
+  ansible.builtin.pip:
+    name: virtualenv
+
+- name: Install certbot from pip
+  ansible.builtin.pip:
+    name: certbot
+    virtualenv: "{{ certbot_dir }}"
+    virtualenv_command: /usr/local/bin/virtualenv
+
+- name: Set Certbot script variable.
+  set_fact:
+    certbot_script: "{{ certbot_dir }}/bin/certbot"

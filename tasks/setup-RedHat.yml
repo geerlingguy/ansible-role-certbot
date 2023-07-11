@@ -23,8 +23,20 @@
       register: dnf_module_enable
       changed_when: false
 
-    when: ansible_facts['distribution_version'] is version('8.2', '<=')
+      when: ansible_facts['distribution_version'] is version('8.2', '<=')
 
   when:
   - ansible_distribution == 'CentOS'
   - ansible_distribution_major_version | int >= 8
+  - ansible_distribution_major_version | int < 9
+
+- name: Enable DNF module for CentOS 9
+  ansible.builtin.dnf:
+    name: epel-release
+    state: present
+  register: dnf_module_enable
+  changed_when: false
+
+  when:
+  - ansible_distribution == 'CentOS'
+  - ansible_distribution_major_version | int >= 9

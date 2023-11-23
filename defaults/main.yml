@@ -15,7 +15,10 @@ certbot_create_if_missing: false
 certbot_create_method: standalone
 certbot_admin_email: email@example.com
 
+# Parameters for conneting to a different acme compatible CA.
+# Can be overwritten by individual per-cert settings.
 certbot_env_vars: {}
+certbot_server: ''
 
 # Default webroot, overwritten by individual per-cert webroot directories
 certbot_webroot: /var/www/letsencrypt
@@ -30,6 +33,7 @@ certbot_certs: []
 #     - example3.com
 #   env_vars:
 #     REQUESTS_CA_BUNDLE: "/etc/ssl/certs/my_root_ca.pem"
+#   server: https://ca.example.com/acme/acme/directory
 
 certbot_create_command: >-
   {{ certbot_script }} certonly --{{ certbot_create_method  }}
@@ -46,6 +50,8 @@ certbot_create_command: >-
   {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'
     if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'
   else '' }}
+  {{ ('--server ' + (cert_item.server | default(certbot_server)))
+    if (cert_item.server | default(certbot_server)) != '' else '' }}
 
 certbot_create_standalone_stop_services:
   - nginx

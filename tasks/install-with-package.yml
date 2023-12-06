@@ -1,6 +1,10 @@
 ---
 - name: Install Certbot.
   package: "name={{ certbot_package }} state=present"
+  register: certbot_installed_ok
+  delay: 5
+  retries: 5
+  until: certbot_installed_ok is success
 
 - name: Set Certbot script variable.
   set_fact:

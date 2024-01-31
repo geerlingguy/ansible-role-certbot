@@ -106,6 +106,17 @@ Let's Encrypt supports [generating wildcard certificates](https://community.lets
 
 Michael Porter also has a walkthrough of [Creating A Let’s Encrypt Wildcard Cert With Ansible](https://www.michaelpporter.com/2018/09/creating-a-wildcard-cert-with-ansible/), specifically with Cloudflare.
 
+### Custom Acme Server
+
+When you want to connect to a different Acme server than the one provided by Let's Encrypt, this can be accomplished by setting the following parameters.
+
+Changing the Acme server can be done for all certificates with `certbot_server` and can also be configured for individual certificates.
+
+Providing your own CA can be done with the `REQUESTS_CA_BUNDLE` environment variable in `certbot_env_vars`. Subsequently this can also be configured for individual certificates.
+
+    certbot_env_vars:
+      REQUESTS_CA_BUNDLE: "/etc/ssl/certs/my_root_ca.pem"
+
 ## Dependencies
 
 None.

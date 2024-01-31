@@ -39,4 +39,5 @@
 
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_create_command }}"
+  environment: "{{ cert_item.env_vars | default(certbot_env_vars) }}"
   when: not letsencrypt_cert.stat.exists

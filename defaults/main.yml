@@ -8,7 +8,7 @@ certbot_auto_renew_options: "--quiet"
 
 certbot_testmode: false
 certbot_hsts: false
-
+certbot_create_extra_args: ""
 
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false
@@ -28,7 +28,8 @@ certbot_certs: []
 #     - example3.com
 
 certbot_create_command: >-
-  {{ certbot_script }} certonly --{{ certbot_create_method  }}
+  {{ certbot_script }} certonly
+  --{{ certbot_create_method }}{{ "-" ~ certbot_dns_plugin if certbot_create_method == 'dns' else '' }}
   {{ '--hsts' if certbot_hsts else '' }}
   {{ '--test-cert' if certbot_testmode else '' }}
   --noninteractive --agree-tos

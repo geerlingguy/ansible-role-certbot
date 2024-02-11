@@ -84,14 +84,7 @@ When using the `dns` creation method, you must specify `certbot_dns_plugin` to s
 
     certbot_dns_plugin: 'route53'
 
-It's important to note that most of the DNS plugins require additional configuration, which must be configured elsewhere in your playbook. For example, some DNS plugins (e.g. [AWS Route53](https://certbot-dns-route53.readthedocs.io/en/stable/)), require environment variables to be set. This can be achieved with the [environment](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_environment.html) module:
-
-    environment:
-      AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
-      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
-      AWS_DEFAULT_REGION: "us-east-1"
-
-Others (e.g. [Digital Ocean](https://certbot-dns-digitalocean.readthedocs.io/en/stable/)) require you to pass an extra argument with the path to a configuration file.
+It's important to note that most of the DNS plugins require additional configuration, which must be configured elsewhere in your playbook. For example, some DNS plugins (e.g. [Digital Ocean](https://certbot-dns-digitalocean.readthedocs.io/en/stable/)) require you to pass an extra argument with the path to a configuration file.
 
     certbot_create_extra_args: "--dns-digitalocean-credentials=/tmp/digitalocean_token.ini"
 

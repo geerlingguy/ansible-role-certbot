@@ -29,6 +29,14 @@
     name: certbot
     classic: true
 
+- name: Install certbot DNS plugin via snap.
+  snap:
+    name: "certbot-dns-{{ certbot_dns_plugin }}"
+    classic: true
+  when:
+    - certbot_create_method == 'dns'
+    - certbot_dns_plugin is defined
+
 - name: Symlink certbot into place.
   file:
     src: /snap/bin/certbot

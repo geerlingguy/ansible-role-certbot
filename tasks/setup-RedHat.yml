@@ -26,5 +26,5 @@
     when: ansible_facts['distribution_version'] is version('8.2', '<=')
 
   when:
-  - ansible_distribution == 'CentOS'
+  - ansible_distribution == 'CentOS' or ansible_distribution == 'Rocky'
   - ansible_distribution_major_version | int >= 8

@@ -1,19 +1,25 @@
 ---
-- import_tasks: include-vars.yml
+- name: Include vars
+  ansible.builtin.import_tasks: include-vars.yml
 
-- import_tasks: setup-RedHat.yml
+- name: Import Redhat task
+  ansible.builtin.import_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
-- import_tasks: install-with-package.yml
+- name: Standalone install method choosed
+  ansible.builtin.import_tasks: install-with-package.yml
   when: certbot_install_method == 'package'
 
-- import_tasks: install-with-snap.yml
+- name: Snap install method choosed
+  ansible.builtin.import_tasks: install-with-snap.yml
   when: certbot_install_method == 'snap'
 
-- import_tasks: install-from-source.yml
+- name: Source install method choosed
+  ansible.builtin.import_tasks: install-from-source.yml
   when: certbot_install_method == 'source'
 
-- include_tasks: create-cert-standalone.yml
+- name: Create certs for standalone install
+  ansible.builtin.include_tasks: create-cert-standalone.yml
   with_items: "{{ certbot_certs }}"
   when:
     - certbot_create_if_missing
@@ -21,7 +27,8 @@
   loop_control:
     loop_var: cert_item
 
-- include_tasks: create-cert-webroot.yml
+- name: Create certs for webroot install
+  ansible.builtin.include_tasks: create-cert-webroot.yml
   with_items: "{{ certbot_certs }}"
   when:
     - certbot_create_if_missing
@@ -29,5 +36,6 @@
   loop_control:
     loop_var: cert_item
 
-- import_tasks: renew-cron.yml
+- name: Check cron jobs
+  ansible.builtin.import_tasks: renew-cron.yml
   when: certbot_auto_renew

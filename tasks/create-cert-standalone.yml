@@ -1,11 +1,11 @@
 ---
 - name: Check if certificate already exists.
-  stat:
+  ansible.builtin.stat:
     path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
   register: letsencrypt_cert
 
 - name: Ensure pre and post hook folders exist.
-  file:
+  ansible.builtin.file:
     path: /etc/letsencrypt/renewal-hooks/{{ item }}
     state: directory
     mode: 0755
@@ -16,7 +16,7 @@
     - post
 
 - name: Create pre hook to stop services.
-  template:
+  ansible.builtin.template:
     src: stop_services.j2
     dest: /etc/letsencrypt/renewal-hooks/pre/stop_services
     owner: root
@@ -27,7 +27,7 @@
     - certbot_create_standalone_stop_services
 
 - name: Create post hook to start services.
-  template:
+  ansible.builtin.template:
     src: start_services.j2
     dest: /etc/letsencrypt/renewal-hooks/post/start_services
     owner: root
@@ -38,5 +38,8 @@
     - certbot_create_standalone_stop_services
 
 - name: Generate new certificate if one doesn't exist.
-  command: "{{ certbot_create_command }}"
+  ansible.builtin.command: "{{ certbot_create_command }}"
+  register: certbot_create_command_result
   when: not letsencrypt_cert.stat.exists
+  changed_when:
+    - certbot_create_command_result.rc is defined and certbot_create_command_result.rc == 0

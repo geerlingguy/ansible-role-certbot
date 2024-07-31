@@ -25,3 +25,13 @@
         dnf config-manager --set-enabled PowerTools
       register: dnf_module_enable
       changed_when: false
+
+- name: Ensure dnf-plugins are installed on Rocky/AlmaLinux.
+  yum:
+    name: dnf-plugins-core
+    state: present
+
+- name: Enable DNF module for Rocky/AlmaLinux.
+  shell: |
+    dnf config-manager --set-enabled crb
+  changed_when: false

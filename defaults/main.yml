@@ -27,6 +27,8 @@ certbot_certs: []
 # - domains:
 #     - example3.com
 
+certbot_create_extra_args: ""
+
 certbot_create_command: >-
   {{ certbot_script }} certonly --{{ certbot_create_method  }}
   {{ '--hsts' if certbot_hsts else '' }}

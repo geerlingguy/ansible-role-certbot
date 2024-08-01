@@ -1,9 +1,4 @@
 ---
-- name: Check if certificate already exists.
-  stat:
-    path: /etc/letsencrypt/live/{{ cert_item.domains | first | replace('*.', '') }}/cert.pem
-  register: letsencrypt_cert
-
 - name: Ensure pre and post hook folders exist.
   file:
     path: /etc/letsencrypt/renewal-hooks/{{ item }}
@@ -39,4 +34,5 @@
 
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_create_command }}"
-  when: not letsencrypt_cert.stat.exists
+  register: certbot_create
+  changed_when: "'no action taken' not in certbot_create.stdout"

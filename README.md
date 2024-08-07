@@ -26,7 +26,7 @@ By default, this role configures a cron job to run under the provided user accou
 
 ### Automatic Certificate Generation
 
-Currently the `standalone` and `webroot` method are supported for generating new certificates using this role.
+Currently the `standalone`, `webroot` and `dns` methods are supported for generating new certificates using this role.
 
 **For a complete example**: see the fully functional test playbook in [molecule/default/playbook-standalone-nginx-aws.yml](molecule/default/playbook-standalone-nginx-aws.yml).
 
@@ -36,7 +36,7 @@ Set `certbot_create_if_missing` to `yes` or `True` to let this role generate cer
 
     certbot_create_method: standalone
 
-Set the method used for generating certs with the `certbot_create_method` variable — current allowed values are: `standalone` or `webroot`.
+Set the method used for generating certs with the `certbot_create_method` variable — current allowed values are: `standalone`, `webroot`, or `dns`.
 
     certbot_testmode: false
 
@@ -74,6 +74,23 @@ Services that should be stopped while `certbot` runs it's own standalone server 
 
 These services will only be stopped the first time a new cert is generated.
 
+#### Webroot Certificate Generation
+
+When using the `webroot` creation method, a `webroot` item has to be provided for every `certbot_certs` item, specifying which directory to use for the authentication. Also, make sure your webserver correctly delivers contents from this directory.
+
+#### DNS Certficate Generation
+
+When using the `dns` creation method, you must specify `certbot_dns_plugin` to specify which [DNS plugin](https://eff-certbot.readthedocs.io/en/latest/using.html#dns-plugins) should be used:
+
+    certbot_dns_plugin: 'route53'
+
+It's important to note that most of the DNS plugins require additional configuration, which must be configured elsewhere in your playbook. For example, some DNS plugins (e.g. [Digital Ocean](https://certbot-dns-digitalocean.readthedocs.io/en/stable/)) require you to pass an extra argument with the path to a configuration file.
+
+    certbot_create_extra_args: "--dns-digitalocean-credentials=/tmp/digitalocean_token.ini"
+
+This approach of using `certbot_create_extra_args` also allows you to configure other DNS options, for example `--dns-digitalocean-propagation-seconds=30` to set the time to wait for DNS propagation.
+
+
 ### Snap Installation
 
 Beginning in December 2020, the Certbot maintainers decided to recommend installing Certbot from Snap rather than maintain scripts like `certbot-auto`.
@@ -81,10 +98,6 @@ Beginning in December 2020, the Certbot maintainers decided to recommend install
 Setting `certbot_install_method: snap` configures this role to install Certbot via Snap.
 
 This install method is currently experimental and may or may not work across all Linux distributions.
-
-#### Webroot Certificate Generation
-
-When using the `webroot` creation method, a `webroot` item has to be provided for every `certbot_certs` item, specifying which directory to use for the authentication. Also, make sure your webserver correctly delivers contents from this directory.
 
 ### Source Installation from Git
 
@@ -102,9 +115,7 @@ The directory inside which Certbot will be cloned.
 
 ### Wildcard Certificates
 
-Let's Encrypt supports [generating wildcard certificates](https://community.letsencrypt.org/t/acme-v2-and-wildcard-certificate-support-is-live/55579), but the process for generating and using them is slightly more involved. See comments in [this pull request](https://github.com/geerlingguy/ansible-role-certbot/pull/60#issuecomment-423919284) for an example of how to use this role to maintain wildcard certs.
-
-Michael Porter also has a walkthrough of [Creating A Let’s Encrypt Wildcard Cert With Ansible](https://www.michaelpporter.com/2018/09/creating-a-wildcard-cert-with-ansible/), specifically with Cloudflare.
+Let's Encrypt supports [generating wildcard certificates](https://community.letsencrypt.org/t/acme-v2-and-wildcard-certificate-support-is-live/55579) using the DNS method (`certbot_create_method: dns`) only.
 
 ## Dependencies
 

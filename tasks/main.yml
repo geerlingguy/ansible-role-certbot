@@ -29,5 +29,13 @@
   loop_control:
     loop_var: cert_item
 
+- include_tasks: create-cert-dns.yml
+  with_items: "{{ certbot_certs }}"
+  when:
+    - certbot_create_if_missing
+    - certbot_create_method == 'dns'
+  loop_control:
+    loop_var: cert_item
+
 - import_tasks: renew-cron.yml
   when: certbot_auto_renew

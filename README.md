@@ -6,7 +6,7 @@ Installs and configures Certbot (for Let's Encrypt).
 
 ## Requirements
 
-If installing from source, Git is required. You can install Git using the `geerlingguy.git` role.
+If installing from source, Git is required. You can install Git using the `geerlingguy.certbot` role.
 
 Generally, installing from source (see section `Source Installation from Git`) leads to a better experience using Certbot and Let's Encrypt, especially if you're using an older OS release.
 

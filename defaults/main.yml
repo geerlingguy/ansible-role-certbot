@@ -13,6 +13,7 @@ certbot_hsts: false
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false
 certbot_create_method: standalone
+certbot_create_extra_args: ""
 certbot_admin_email: email@example.com
 
 # Default webroot, overwritten by individual per-cert webroot directories

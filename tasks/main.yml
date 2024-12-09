@@ -1,6 +1,4 @@
 ---
-- import_tasks: include-vars.yml
-
 - import_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 

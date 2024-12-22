@@ -12,3 +12,18 @@
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_create_command }}"
   when: not letsencrypt_cert.stat.exists
+
+- name: Register certificate domains (if certbot_expand)
+  shell: "{{ certbot_script }} certificates --cert-name {{ cert_item.domains | first | replace('*.', '') }} | grep Domains | cut -d':' -f2"
+  changed_when: false
+  register: letsencrypt_cert_domains_dirty
+  when: certbot_expand and letsencrypt_cert.stat.exists
+
+- name: Cleanup domain list (if certbot_expand)
+  set_fact:
+    letsencrypt_cert_domains: "{{ letsencrypt_cert_domains_dirty.stdout | trim | split(' ') | map('trim') | select('!=', '') | list | sort }}"
+  when: certbot_expand and letsencrypt_cert.stat.exists
+
+- name: Expand certbot certificate (if certbot_expand)
+  command: "{{ certbot_create_command }}"
+  when: certbot_expand and letsencrypt_cert.stat.exists and letsencrypt_cert_domains != cert_item.domains | map('trim') | select('!=', '') | list | sort

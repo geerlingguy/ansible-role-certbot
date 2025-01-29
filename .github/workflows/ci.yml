@@ -47,7 +47,7 @@ jobs:
           - distro: ubuntu2004
             playbook: converge.yml
             experimental: false
-          - distro: debian10
+          - distro: debian11
             playbook: converge.yml
             experimental: false
 

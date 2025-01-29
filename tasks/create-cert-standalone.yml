@@ -1,4 +1,13 @@
 ---
+- name: Determine certificate name
+  set_fact:
+    cert_item_name: "{{ cert_item.name | default(cert_item.domains | first | replace('*.', '')) }}"
+
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item_name }}/cert.pem
+  register: letsencrypt_cert
+
 - name: Ensure pre and post hook folders exist.
   file:
     path: /etc/letsencrypt/renewal-hooks/{{ item }}
@@ -32,7 +41,23 @@
     - certbot_create_standalone_stop_services is defined
     - certbot_create_standalone_stop_services
 
+- name: Check if domains have changed
+  block:
+    - name: Register certificate domains
+      shell: "{{ certbot_script }} certificates --cert-name {{ cert_item_name }} | grep Domains | cut -d':' -f2"
+      changed_when: false
+      register: letsencrypt_cert_domains_dirty
+
+    - name: Cleanup domain list
+      set_fact:
+        letsencrypt_cert_domains: "{{ letsencrypt_cert_domains_dirty.stdout | trim | split(' ') | map('trim') | select('!=', '') | list | sort }}"
+
+    - name: Determine if domains have changed
+      set_fact:
+        letsencrypt_cert_domains_changed: "{{ letsencrypt_cert_domains != (cert_item.domains | map('trim') | select('!=', '') | list | sort) }}"
+
+  when: letsencrypt_cert.stat.exists
+
 - name: Generate new certificate if one doesn't exist.
   command: "{{ certbot_create_command }}"
-  register: certbot_create
-  changed_when: "'no action taken' not in certbot_create.stdout"
+  when: not letsencrypt_cert.stat.exists or letsencrypt_cert_domains_changed | default(false)

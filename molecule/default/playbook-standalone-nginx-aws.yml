@@ -91,7 +91,8 @@
     certbot_create_if_missing: true
     certbot_create_standalone_stop_services: []
     certbot_certs:
-      - domains:
+      - name: certbot-test.servercheck.in
+        domains:
           - certbot-test.servercheck.in
     nginx_vhosts:
       - listen: "443 ssl http2"

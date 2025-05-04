@@ -29,6 +29,21 @@ certbot_certs: []
 #     - example2.com
 # - domains:
 #     - example3.com
+# - name: example4.com
+#   dns_rfc2136_credentials: "local-keyname"
+#   domains:
+#     - "example4.com"
+#     - "example5.com"
+
+# certbot_dns_rfc2136_credentials:
+#   - name: "local-keyname"
+#     server: "192.0.2.1" # ip address only
+#     port: 53
+#     key_name: "keyname-in-dns-config"
+#     secret: "example_rfc2136_secret"
+#     algorithm: "HMAC-SHA256"
+
+certbot_dns_rfc2136_propagation_seconds: 60
 
 certbot_create_command: >-
   {{ certbot_script }} certonly --{{ certbot_create_method  }}
@@ -39,6 +54,10 @@ certbot_create_command: >-
   {{ '--expand' if certbot_expand else '' }}
   {{ '--webroot-path ' if certbot_create_method == 'webroot'  else '' }}
   {{ cert_item.webroot | default(certbot_webroot) if certbot_create_method == 'webroot' else '' }}
+  {{ '--dns-rfc2136-propagation-seconds ' if certbot_create_method == 'dns-rfc2136'  else '' }}
+  {{ certbot_dns_rfc2136_propagation_seconds if certbot_create_method == 'dns-rfc2136'  else '' }}
+  {{ '--dns-rfc2136-credentials ' if certbot_create_method == 'dns-rfc2136'  else '' }}
+  {{ '/etc/letsencrypt/' + cert_item.dns_rfc2136_credentials + '.ini' if certbot_create_method == 'dns-rfc2136'  else '' }}
   {{ certbot_create_extra_args }}
   --cert-name {{ cert_item_name }}
   -d {{ cert_item.domains | join(',') }}

@@ -1,2 +1,4 @@
 ---
-certbot_package: certbot
+certbot_package:
+  - certbot
+  - python3-certbot-dns-rfc2136

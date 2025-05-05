@@ -6,4 +6,4 @@
 
 - name: Set Certbot script variable.
   set_fact:
-    certbot_script: "{{ certbot_package }}"
+    certbot_script: "certbot"

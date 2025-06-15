@@ -128,7 +128,7 @@ See other examples in the `tests/` directory.
 
 _Note: You can have this role automatically generate certificates; see the "Automatic Certificate Generation" documentation above._
 
-You can manually create certificates using the `certbot` (or `certbot-auto`) script (use `letsencrypt` on Ubuntu 16.04, or use `/opt/certbot/certbot-auto` if installing from source/Git. Here are some example commands to configure certificates with Certbot:
+You can manually create certificates using the `certbot` (or `certbot-auto`) script (use `letsencrypt` on Ubuntu 16.04, or use `/opt/certbot/certbot-auto` if installing from source/Git). Here are some example commands to configure certificates with Certbot:
 
     # Automatically add certs for all Apache virtualhosts (use with caution!).
     certbot --apache

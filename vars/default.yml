@@ -1,2 +1,5 @@
 ---
 certbot_package: certbot
+certbot_create_packages:
+  'dns-cloudflare':
+    - python3-certbot-dns-cloudflare

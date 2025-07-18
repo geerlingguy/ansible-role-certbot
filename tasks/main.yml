@@ -13,6 +13,17 @@
 - import_tasks: install-from-source.yml
   when: certbot_install_method == 'source'
 
+- name: Cloudflare API token
+  ansible.builtin.template:
+    src: dnscloudflare.ini.j2
+    dest: "/etc/letsencrypt/dnscloudflare.ini"
+    owner: root
+    group: root
+    mode: '0600'
+  when:
+    - certbot_create_method == 'dns-cloudflare'
+  become: true
+
 - include_tasks: create-cert-standalone.yml
   with_items: "{{ certbot_certs }}"
   when:
@@ -26,6 +37,14 @@
   when:
     - certbot_create_if_missing
     - certbot_create_method == 'webroot'
+  loop_control:
+    loop_var: cert_item
+
+- include_tasks: create-cert-dns-cloudflare.yml
+  with_items: "{{ certbot_certs }}"
+  when:
+    - certbot_create_if_missing
+    - certbot_create_method == 'dns-cloudflare'
   loop_control:
     loop_var: cert_item
 

@@ -26,7 +26,11 @@ By default, this role configures a cron job to run under the provided user accou
 
 ### Automatic Certificate Generation
 
-Currently the `standalone` and `webroot` method are supported for generating new certificates using this role.
+Current methods supported for generating new certificates using this role:
+
+  - `standalone`
+  - `webroot`
+  - `dns-cloudflare`
 
 **For a complete example**: see the fully functional test playbook in [molecule/default/playbook-standalone-nginx-aws.yml](molecule/default/playbook-standalone-nginx-aws.yml).
 
@@ -36,7 +40,7 @@ Set `certbot_create_if_missing` to `yes` or `True` to let this role generate cer
 
     certbot_create_method: standalone
 
-Set the method used for generating certs with the `certbot_create_method` variable — current allowed values are: `standalone` or `webroot`.
+Set the method used for generating certs with the `certbot_create_method` variable — current allowed values are: `standalone`, `webroot` or 'dns-cloudflare'.
 
     certbot_testmode: false
 
@@ -85,6 +89,11 @@ This install method is currently experimental and may or may not work across all
 #### Webroot Certificate Generation
 
 When using the `webroot` creation method, a `webroot` item has to be provided for every `certbot_certs` item, specifying which directory to use for the authentication. Also, make sure your webserver correctly delivers contents from this directory.
+
+#### dns-cloudflare Certificate Generation
+
+When using the `dns-cloudflare` creation method, set `certbot_dns_cloudflare_api_token` with your Cloudflare API token.
+The process will generate a `dns-01` challenge (*DNS01*) by creating, and subsequently removing, TXT records using the Cloudflare API. See [certbot-dns-cloudflare documentation](https://certbot-dns-cloudflare.readthedocs.io/en/stable/) for details.
 
 ### Source Installation from Git
 

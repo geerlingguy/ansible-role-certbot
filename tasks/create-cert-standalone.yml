@@ -28,7 +28,7 @@
     mode: 0750
   when:
     - certbot_create_standalone_stop_services is defined
-    - certbot_create_standalone_stop_services
+    - certbot_create_standalone_stop_services is truthy
 
 - name: Create post hook to start services.
   template:
@@ -39,7 +39,7 @@
     mode: 0750
   when:
     - certbot_create_standalone_stop_services is defined
-    - certbot_create_standalone_stop_services
+    - certbot_create_standalone_stop_services is truthy
 
 - name: Check if domains have changed
   block:

@@ -1,9 +1,10 @@
 ---
 - name: Install Certbot.
   package:
-    name: "{{ certbot_package }}"
+    name: "{{ item }}"
     state: present
+  with_items: "{{ certbot_package }}"
 
 - name: Set Certbot script variable.
   set_fact:
-    certbot_script: "{{ certbot_package }}"
+    certbot_script: "{{ certbot_package[0] }}"

@@ -111,19 +111,19 @@
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=true cache_valid_time=600
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts.os_family == 'Debian'
       changed_when: false
 
     - name: Install dependencies (RedHat).
       yum: name={{ item }} state=present
-      when: ansible_os_family == 'RedHat'
+      when: ansible_facts.os_family == 'RedHat'
       with_items:
         - cronie
         - epel-release
 
     - name: Install cron (Debian).
       apt: name=cron state=present
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts.os_family == 'Debian'
 
   roles:
     - geerlingguy.certbot

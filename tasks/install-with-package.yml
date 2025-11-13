@@ -4,6 +4,16 @@
     name: "{{ certbot_package }}"
     state: present
 
+- name: Install Certbot dependencies.
+  package:
+    name: "{{ cert_item }}"
+    state: present
+  when:
+    - certbot_create_method in certbot_create_packages
+  loop: "{{ certbot_create_packages[certbot_create_method] }}"
+  loop_control:
+    loop_var: cert_item
+
 - name: Set Certbot script variable.
   set_fact:
     certbot_script: "{{ certbot_package }}"

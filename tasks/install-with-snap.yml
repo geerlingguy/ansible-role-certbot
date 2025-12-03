@@ -28,6 +28,7 @@
   snap:
     name: certbot
     classic: true
+    channel: "{{ certbot_snap_channel }}"
 
 - name: Symlink certbot into place.
   file:

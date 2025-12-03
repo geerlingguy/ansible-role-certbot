@@ -60,6 +60,8 @@ certbot_create_standalone_stop_services:
 
 # Available options: 'package', 'snap', 'source'.
 certbot_install_method: 'package'
+# Snap install options: 'stable', 'beta', 'edge', for more see https://snapcraft.io/docs/channels
+certbot_snap_channel: 'stable'
 
 # Source install configuration.
 certbot_repo: https://github.com/certbot/certbot.git

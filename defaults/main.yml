@@ -47,10 +47,10 @@ certbot_create_command: >-
   -d {{ cert_item.domains | join(',') }}
   {{ '--expand' if certbot_expand else '' }}
   {{ '--pre-hook /etc/letsencrypt/renewal-hooks/pre/stop_services'
-    if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'
+    if certbot_create_standalone_stop_services and certbot_create_method in ['standalone', 'nginx']
   else '' }}
   {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'
-    if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'
+    if certbot_create_standalone_stop_services and certbot_create_method in ['standalone', 'nginx']
   else '' }}
   {{ "--deploy-hook '" ~ cert_item.deploy_hook ~ "'"
     if 'deploy_hook' in cert_item

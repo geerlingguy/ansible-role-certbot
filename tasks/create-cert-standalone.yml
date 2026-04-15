@@ -21,7 +21,7 @@
 
 - name: Create pre hook to stop services.
   template:
-    src: stop_services.j2
+    src: "{{ certbot_pre_hook_template }}"
     dest: /etc/letsencrypt/renewal-hooks/pre/stop_services
     owner: root
     group: root
@@ -32,7 +32,7 @@
 
 - name: Create post hook to start services.
   template:
-    src: start_services.j2
+    src: "{{ certbot_post_hook_template }}"
     dest: /etc/letsencrypt/renewal-hooks/post/start_services
     owner: root
     group: root

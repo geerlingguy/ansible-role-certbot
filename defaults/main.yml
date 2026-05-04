@@ -58,13 +58,23 @@ certbot_create_standalone_stop_services:
   # - apache
   # - varnish
 
-# Available options: 'package', 'snap', 'source'.
+# Available options: 'package', 'snap', 'source', 'pip'.
+# Note: 'source' is deprecated — it relies on certbot-auto, which EFF removed
+# from the certbot repo in 2021. Use 'pip' for the equivalent always-latest
+# install (creates a venv at {{ certbot_dir }} and pip-installs certbot).
 certbot_install_method: 'package'
 
-# Source install configuration.
+# Source / pip install configuration.
 certbot_repo: https://github.com/certbot/certbot.git
 certbot_version: master
 certbot_keep_updated: true
 
-# Where to put Certbot when installing from source.
+# Where to put Certbot when installing from source or pip (venv root for pip).
 certbot_dir: /opt/certbot
+
+# Extra pip packages installed alongside certbot in the same venv (pip method only).
+# Use this for plugins, e.g.:
+#   certbot_pip_extra_packages:
+#     - certbot-dns-rfc2136
+#     - certbot-dns-cloudflare
+certbot_pip_extra_packages: []

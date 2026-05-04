@@ -13,6 +13,9 @@
 - import_tasks: install-from-source.yml
   when: certbot_install_method == 'source'
 
+- import_tasks: install-with-pip.yml
+  when: certbot_install_method == 'pip'
+
 - include_tasks: create-cert-standalone.yml
   with_items: "{{ certbot_certs }}"
   when:

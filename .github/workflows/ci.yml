@@ -50,16 +50,6 @@ jobs:
           - distro: debian12
             playbook: converge.yml
             experimental: false
-<<<<<<< Updated upstream
-=======
-          - distro: debian10
-            playbook: converge.yml
-            experimental: false
-          # Source install started failing recently.
-          # - distro: centos7
-          #   playbook: playbook-source-install.yml
-          #   experimental: false
->>>>>>> Stashed changes
 
           - distro: rockylinux9
             playbook: playbook-snap-install.yml

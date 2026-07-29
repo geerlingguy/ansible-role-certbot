@@ -9,3 +9,4 @@
   shell: |
     dnf config-manager --set-enabled crb
   changed_when: false
+  when: ansible_distribution != 'Fedora'

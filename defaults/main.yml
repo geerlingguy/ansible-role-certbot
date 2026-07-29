@@ -9,6 +9,12 @@ certbot_auto_renew_options: "--quiet"
 certbot_testmode: false
 certbot_hsts: false
 
+certbot_renewal_hook_post: ""
+certbot_renewal_hook_pre: ""
+certbot_renewal_hook_deploy: ""
+certbot_renewal_hook_post_filename: "post.sh"
+certbot_renewal_hook_pre_filename: "pre.sh"
+certbot_renewal_hook_deploy_filename: "deploy.sh"
 
 # Parameters used when creating new Certbot certs.
 certbot_create_if_missing: false

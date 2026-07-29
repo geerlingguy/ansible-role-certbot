@@ -1,0 +1,30 @@
+---
+- name: Ensure renewal hook directories exist
+  file:
+    path: "/etc/letsencrypt/renewal-hooks/{{ item }}"
+    state: directory
+  with_items:
+    - post
+    - pre
+    - deploy
+
+- name: Create post-renewal hook
+  copy:
+    content: "{{ certbot_renewal_hook_post }}"
+    dest: "/etc/letsencrypt/renewal-hooks/post/{{ certbot_renewal_hook_post_filename }}"
+    mode: "0755"
+  when: certbot_renewal_hook_post != ""
+
+- name: Create pre-renewal hook
+  copy:
+    content: "{{ certbot_renewal_hook_pre }}"
+    dest: "/etc/letsencrypt/renewal-hooks/pre/{{ certbot_renewal_hook_pre_filename }}"
+    mode: "0755"
+  when: certbot_renewal_hook_pre != ""
+
+- name: Create deploy-renewal hook
+  copy:
+    content: "{{ certbot_renewal_hook_deploy }}"
+    dest: "/etc/letsencrypt/renewal-hooks/deploy/{{ certbot_renewal_hook_deploy_filename }}"
+    mode: "0755"
+  when: certbot_renewal_hook_deploy != ""

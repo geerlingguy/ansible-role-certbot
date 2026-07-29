@@ -44,7 +44,7 @@
 - name: Check if domains have changed
   block:
     - name: Register certificate domains
-      shell: "{{ certbot_script }} certificates --cert-name {{ cert_item_name }} | grep Domains | cut -d':' -f2"
+      shell: "{{ certbot_script }} certificates --cert-name {{ cert_item_name }} | grep -E '(Domains|Identifiers)' | cut -d':' -f2"
       changed_when: false
       register: letsencrypt_cert_domains_dirty
 

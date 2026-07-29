@@ -6,15 +6,17 @@ Installs and configures Certbot (for Let's Encrypt).
 
 ## Requirements
 
-If installing from source, Git is required. You can install Git using the `geerlingguy.git` role.
+If installing from source (deprecated), Git is required. You can install Git using the `geerlingguy.git` role.
 
-Generally, installing from source (see section `Source Installation from Git`) leads to a better experience using Certbot and Let's Encrypt, especially if you're using an older OS release.
+For the `pip` install method, only Debian-family targets are supported (apt is used for the `python3-venv` / `libaugeas-dev` / `gcc` prerequisites).
+
+If you want an always-latest Certbot install on modern distros, prefer `pip` (see `Pip Installation` below) over `source` — the legacy source method relies on `certbot-auto`, which EFF removed from the Certbot repo in 2021.
 
 ## Role Variables
 
     certbot_install_method: package
 
-Controls how Certbot is installed. Available options are 'package', 'snap', and 'source'.
+Controls how Certbot is installed. Available options are 'package', 'snap', 'pip', and 'source' (deprecated).
 
     certbot_auto_renew: true
     certbot_auto_renew_user: "{{ ansible_user | default(lookup('env', 'USER')) }}"
@@ -86,7 +88,29 @@ This install method is currently experimental and may or may not work across all
 
 When using the `webroot` creation method, a `webroot` item has to be provided for every `certbot_certs` item, specifying which directory to use for the authentication. Also, make sure your webserver correctly delivers contents from this directory.
 
-### Source Installation from Git
+### Pip Installation
+
+Setting `certbot_install_method: pip` installs Certbot into a Python virtual environment at `{{ certbot_dir }}` (default `/opt/certbot`) using EFF's recommended pip install path: <https://certbot.eff.org/instructions?os=pip>. The `certbot` binary is symlinked into `/usr/local/bin` so it is on `PATH`.
+
+This is the modern equivalent of the legacy `source` install — use it when you want an always-latest Certbot on a distro whose packaged version is too old. Only Debian-family targets are supported by the included tasks; the necessary apt prerequisites (`python3-venv`, `libaugeas-dev`, `gcc`, etc.) are installed automatically.
+
+If `certbot_keep_updated: true` (the default), each role run will upgrade Certbot to the latest version on PyPI.
+
+    certbot_dir: /opt/certbot
+
+The directory used as the venv root for the `pip` install (and the clone target for the legacy `source` install).
+
+    certbot_pip_extra_packages: []
+
+Extra pip packages installed alongside Certbot in the same venv when using the `pip` install method. Use this for plugins, e.g.:
+
+    certbot_pip_extra_packages:
+      - certbot-dns-rfc2136
+      - certbot-dns-cloudflare
+
+### Source Installation from Git (deprecated)
+
+> **Deprecated.** EFF removed the `certbot-auto` shim from the Certbot repo in 2021, so this install path no longer produces a working `certbot` binary. Use `certbot_install_method: pip` for the modern equivalent.
 
 You can install Certbot from it's Git source repository if desired with `certbot_install_method: source`. This might be useful in several cases, but especially when older distributions don't have Certbot packages available (e.g. CentOS < 7, Ubuntu < 16.10 and Debian < 8).
 
@@ -95,10 +119,6 @@ You can install Certbot from it's Git source repository if desired with `certbot
     certbot_keep_updated: true
 
 Certbot Git repository options. If installing from source, the configured `certbot_repo` is cloned, respecting the `certbot_version` setting. If `certbot_keep_updated` is set to `yes`, the repository is updated every time this role runs.
-
-    certbot_dir: /opt/certbot
-
-The directory inside which Certbot will be cloned.
 
 ### Wildcard Certificates
 

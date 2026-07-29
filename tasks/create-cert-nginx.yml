@@ -1,0 +1,65 @@
+---
+- name: Determine certificate name
+  set_fact:
+    cert_item_name: "{{ cert_item.name | default(cert_item.domains | first | replace('*.', '')) }}"
+
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ cert_item_name }}/cert.pem
+  register: letsencrypt_cert
+  become: true
+
+- name: Ensure pre and post hook folders exist.
+  file:
+    path: /etc/letsencrypt/renewal-hooks/{{ item }}
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - pre
+    - post
+
+- name: Create pre hook to stop services.
+  template:
+    src: stop_services.j2
+    dest: /etc/letsencrypt/renewal-hooks/pre/stop_services
+    owner: root
+    group: root
+    mode: 0750
+  when:
+    - certbot_create_standalone_stop_services is defined
+    - certbot_create_standalone_stop_services is truthy
+
+- name: Create post hook to start services.
+  template:
+    src: start_services.j2
+    dest: /etc/letsencrypt/renewal-hooks/post/start_services
+    owner: root
+    group: root
+    mode: 0750
+  when:
+    - certbot_create_standalone_stop_services is defined
+    - certbot_create_standalone_stop_services is truthy
+
+- name: Check if domains have changed
+  block:
+    - name: Register certificate domains
+      shell: "{{ certbot_script }} certificates --cert-name {{ cert_item_name }} | grep Domains | cut -d':' -f2"
+      changed_when: false
+      register: letsencrypt_cert_domains_dirty
+
+    - name: Cleanup domain list
+      set_fact:
+        letsencrypt_cert_domains: "{{ letsencrypt_cert_domains_dirty.stdout | trim | split(' ') | map('trim') | select('!=', '') | list | sort }}"
+
+    - name: Determine if domains have changed
+      set_fact:
+        letsencrypt_cert_domains_changed: "{{ letsencrypt_cert_domains != (cert_item.domains | map('trim') | select('!=', '') | list | sort) }}"
+
+  when: letsencrypt_cert.stat.exists
+
+- name: Generate new certificate if one doesn't exist.
+  command: "{{ certbot_create_command }}"
+  when: not letsencrypt_cert.stat.exists or letsencrypt_cert_domains_changed | default(false)
+  become: true

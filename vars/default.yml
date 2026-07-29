@@ -1,2 +1,7 @@
 ---
 certbot_package: certbot
+certbot_create_packages:
+  nginx:
+    - python3-certbot-nginx
+  'dns-cloudflare':
+    - python3-certbot-dns-cloudflare

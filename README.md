@@ -74,6 +74,11 @@ Services that should be stopped while `certbot` runs it's own standalone server 
 
 These services will only be stopped the first time a new cert is generated.
 
+    certbot_pre_hook_template: stop_services.j2
+    certbot_post_hook_template: start_services.j2
+
+If you need to stop and start services in another way, firstly you define these services in `certbot_create_standalone_stop_services` and then you must create your own templates for this mision and set its paths in `certbot_pre_hook_template` and `certbot_post_hook_template`.
+
 ### Snap Installation
 
 Beginning in December 2020, the Certbot maintainers decided to recommend installing Certbot from Snap rather than maintain scripts like `certbot-auto`.

@@ -14,15 +14,9 @@
 
     - name: Install dependencies (RedHat).
       yum:
-        name:
-          - cronie
-          - epel-release
+        name: epel-release
         state: present
       when: ansible_facts.os_family == 'RedHat'
-
-    - name: Install cron (Debian).
-      apt: name=cron state=present
-      when: ansible_facts.os_family == 'Debian'
 
   roles:
     - geerlingguy.certbot

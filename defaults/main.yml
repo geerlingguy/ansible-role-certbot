@@ -63,7 +63,7 @@ certbot_install_method: 'package'
 
 # Source install configuration.
 certbot_repo: https://github.com/certbot/certbot.git
-certbot_version: master
+certbot_version: main
 certbot_keep_updated: true
 
 # Where to put Certbot when installing from source.

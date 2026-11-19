@@ -36,7 +36,10 @@ Set `certbot_create_if_missing` to `yes` or `True` to let this role generate cer
 
     certbot_create_method: standalone
 
-Set the method used for generating certs with the `certbot_create_method` variable — current allowed values are: `standalone` or `webroot`.
+Set the method used for generating certs with the `certbot_create_method` variable. The role passes it to certbot as `--authenticator`. `standalone` and `webroot` need nothing else. Any other value names an authenticator plugin, such as a DNS plugin. Install the plugin yourself, and pass its options in `certbot_create_extra_args`:
+
+    certbot_create_method: dns-cloudflare
+    certbot_create_extra_args: "--dns-cloudflare-credentials /root/.secrets/cloudflare.ini"
 
     certbot_testmode: false
 

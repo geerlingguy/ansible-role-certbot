@@ -17,11 +17,12 @@
 - import_tasks: install-from-source.yml
   when: certbot_install_method == 'source'
 
+# Also for authenticator plugins, such as the DNS plugins
 - include_tasks: create-cert-standalone.yml
   with_items: "{{ certbot_certs }}"
   when:
     - certbot_create_if_missing
-    - certbot_create_method == 'standalone'
+    - certbot_create_method != 'webroot'
   loop_control:
     loop_var: cert_item
 

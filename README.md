@@ -91,7 +91,7 @@ When using the `webroot` creation method, a `webroot` item has to be provided fo
 You can install Certbot from it's Git source repository if desired with `certbot_install_method: source`. This might be useful in several cases, but especially when older distributions don't have Certbot packages available (e.g. CentOS < 7, Ubuntu < 16.10 and Debian < 8).
 
     certbot_repo: https://github.com/certbot/certbot.git
-    certbot_version: master
+    certbot_version: main
     certbot_keep_updated: true
 
 Certbot Git repository options. If installing from source, the configured `certbot_repo` is cloned, respecting the `certbot_version` setting. If `certbot_keep_updated` is set to `yes`, the repository is updated every time this role runs.

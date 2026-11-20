@@ -150,6 +150,8 @@ If you want to fully automate the process of adding a new certificate, but don't
 
 By default, this role adds a cron job that will renew all installed certificates once per day at the hour and minute of your choosing.
 
+The role ensures a vixie-cron-compatible cron daemon is installed (`cron` on Debian-based systems, `cronie` on RedHat-based systems, overridable via `certbot_cron_package`), since Ansible's `cron` module cannot manage crontabs through `systemd-cron`.
+
 You can test the auto-renewal (without actually renewing the cert) with the command:
 
     /opt/certbot/certbot-auto renew --dry-run

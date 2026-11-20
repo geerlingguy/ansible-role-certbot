@@ -1,4 +1,13 @@
 ---
+# The cron module requires a vixie-cron-compatible crontab. Minimal systems may
+# have no cron at all, and systemd-cron's crontab exits 2 (instead of 1) for a
+# user with no crontab yet, which the cron module reports as "Unable to read
+# crontab". See: https://github.com/geerlingguy/ansible-role-certbot/issues/247
+- name: Ensure cron is installed (if configured).
+  package:
+    name: "{{ certbot_cron_package }}"
+    state: present
+
 - name: Add cron job for certbot renewal (if configured).
   cron:
     name: Certbot automatic renewal.

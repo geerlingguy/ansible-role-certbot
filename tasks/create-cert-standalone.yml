@@ -27,6 +27,7 @@
     group: root
     mode: 0750
   when:
+    - certbot_create_method == 'standalone'
     - certbot_create_standalone_stop_services is defined
     - certbot_create_standalone_stop_services is truthy
 
@@ -38,6 +39,7 @@
     group: root
     mode: 0750
   when:
+    - certbot_create_method == 'standalone'
     - certbot_create_standalone_stop_services is defined
     - certbot_create_standalone_stop_services is truthy
 

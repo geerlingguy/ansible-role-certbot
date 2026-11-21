@@ -1,8 +1,12 @@
 ---
 - import_tasks: include-vars.yml
 
+# On Enterprise Linux, the package and snap methods install from EPEL, whose
+# packages can need CRB.
 - import_tasks: setup-RedHat.yml
-  when: ansible_facts.os_family == 'RedHat'
+  when:
+    - ansible_facts.os_family == 'RedHat'
+    - certbot_install_method in ['package', 'snap']
 
 - import_tasks: install-with-package.yml
   when: certbot_install_method == 'package'
@@ -13,11 +17,12 @@
 - import_tasks: install-from-source.yml
   when: certbot_install_method == 'source'
 
+# Also for authenticator plugins, such as the DNS plugins
 - include_tasks: create-cert-standalone.yml
   with_items: "{{ certbot_certs }}"
   when:
     - certbot_create_if_missing
-    - certbot_create_method == 'standalone'
+    - certbot_create_method != 'webroot'
   loop_control:
     loop_var: cert_item
 

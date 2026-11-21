@@ -9,4 +9,13 @@
   shell: |
     dnf config-manager --set-enabled crb
   changed_when: false
-  when: ansible_distribution != 'Fedora'
+  when: ansible_facts.distribution not in ['Fedora', 'RedHat']
+
+# RHEL names the repository differently, and subscription-manager manages it.
+# See: https://github.com/geerlingguy/ansible-role-certbot/issues/252
+- name: Enable CodeReady Builder for RHEL.
+  command: >-
+    subscription-manager repos --enable
+    codeready-builder-for-rhel-{{ ansible_facts.distribution_major_version }}-{{ ansible_facts.architecture }}-rpms
+  changed_when: false
+  when: ansible_facts.distribution == 'RedHat'

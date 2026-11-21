@@ -31,7 +31,7 @@ certbot_certs: []
 #     - example3.com
 
 certbot_create_command: >-
-  {{ certbot_script }} certonly --{{ certbot_create_method  }}
+  {{ certbot_script }} certonly --authenticator {{ certbot_create_method }}
   {{ '--hsts' if certbot_hsts else '' }}
   {{ '--test-cert' if certbot_testmode else '' }}
   --noninteractive --agree-tos
@@ -42,14 +42,13 @@ certbot_create_command: >-
   {{ certbot_create_extra_args }}
   --cert-name {{ cert_item_name }}
   -d {{ cert_item.domains | join(',') }}
-  {{ '--expand' if certbot_expand else '' }}
   {{ '--pre-hook /etc/letsencrypt/renewal-hooks/pre/stop_services'
     if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'
   else '' }}
   {{ '--post-hook /etc/letsencrypt/renewal-hooks/post/start_services'
     if certbot_create_standalone_stop_services and certbot_create_method == 'standalone'
   else '' }}
-  {{ "--deploy-hook '" ~ cert_item.deploy_hook ~ "'"
+  {{ '--deploy-hook ' ~ (cert_item.deploy_hook | quote)
     if 'deploy_hook' in cert_item
   else '' }}
 
